@@ -1,0 +1,93 @@
+<html style="margin:0;padding:0;">
+<title>拾光画廊 · 项目架构与开发路线图</title>
+<div style="width:100%;box-sizing:border-box;max-width:960px;margin:0 auto;padding:20px 16px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;background:#f6f8fb;color:#1f2937;line-height:1.5;">
+  <!-- 头部 -->
+  <div style="background:#2f6fdb;border-radius:12px;padding:18px 22px;color:#fff;margin-bottom:18px;">
+    <div style="font-size:20px;font-weight:700;">拾光画廊 · 轻量图片画廊与收藏管理系统</div>
+    <div style="font-size:14px;opacity:.9;margin-top:6px;">个人前端工程实践项目 ｜ 聚焦性能优化 + 工程化 ｜ React 18 · TypeScript · Vite · Axios · Context+useReducer · Express</div>
+  </div>
+
+  <!-- 系统架构 -->
+  <div style="background:#fff;border:1px solid #e3e8ef;border-radius:12px;padding:16px 18px;margin-bottom:16px;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:12px;">系统架构与数据流</div>
+
+    <!-- 前端展示层 -->
+    <div style="border:2px solid #2f6fdb;border-radius:10px;padding:10px 14px;">
+      <div style="font-size:14px;font-weight:600;color:#2f6fdb;margin-bottom:8px;">前端展示层（页面 + 路由）</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:13px;">
+        <span style="background:#e8f0fc;color:#2459b8;border-radius:6px;padding:5px 10px;">首页：瀑布流 / 分类筛选 / 搜索(防抖) / 排序 / 无限加载</span>
+        <span style="background:#e8f0fc;color:#2459b8;border-radius:6px;padding:5px 10px;">详情页：大图 / 标签 / 同分类推荐</span>
+        <span style="background:#e8f0fc;color:#2459b8;border-radius:6px;padding:5px 10px;">收藏夹：收藏图片管理</span>
+        <span style="background:#eef2f7;color:#6b7280;border-radius:6px;padding:5px 10px;">路由：React.lazy + Suspense 代码分割</span>
+      </div>
+    </div>
+
+    <!-- 数据流箭头 -->
+    <div style="text-align:center;font-size:13px;color:#6b7280;padding:4px 0;">▼  fetchImages / fetchImageDetail / fetchFavorites  ▼</div>
+
+    <!-- 前端架构层 -->
+    <div style="border:2px solid #16a34a;border-radius:10px;padding:10px 14px;">
+      <div style="font-size:14px;font-weight:600;color:#15803d;margin-bottom:8px;">前端架构层（基础能力）</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:13px;">
+        <span style="background:#ecfdf5;color:#15803d;border-radius:6px;padding:5px 10px;">API 层 http.ts：Axios 拦截器 / 超时 / 错误归一化 / 请求取消</span>
+        <span style="background:#ecfdf5;color:#15803d;border-radius:6px;padding:5px 10px;">状态：Context + useReducer → localStorage 持久化 → 后端同步(可降级)</span>
+        <span style="background:#ecfdf5;color:#15803d;border-radius:6px;padding:5px 10px;">类型：types/index.ts 全链路 TS 约束（strict）</span>
+        <span style="background:#ecfdf5;color:#15803d;border-radius:6px;padding:5px 10px;">Hooks：useDebounce / useInView / useColumnCount</span>
+      </div>
+    </div>
+
+    <!-- 数据流箭头 -->
+    <div style="text-align:center;font-size:13px;color:#6b7280;padding:4px 0;">▼  GET/POST/DELETE /api/*（Vite dev 代理，生产指向线上）  ▼</div>
+
+    <!-- 后端服务层 -->
+    <div style="border:2px solid #dc2626;border-radius:10px;padding:10px 14px;">
+      <div style="font-size:14px;font-weight:600;color:#b91c1c;margin-bottom:8px;">后端服务层（Node.js + Express，极简全栈）</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:13px;">
+        <span style="background:#fef2f2;color:#b91c1c;border-radius:6px;padding:5px 10px;">routes/images：列表(分页/筛选/搜索/排序) / 详情 / 分类</span>
+        <span style="background:#fef2f2;color:#b91c1c;border-radius:6px;padding:5px 10px;">routes/favorites：收藏增 / 删 / 查（RESTful）</span>
+        <span style="background:#fef2f2;color:#b91c1c;border-radius:6px;padding:5px 10px;">数据：imageData 360 张确定性模拟图片（种子随机）</span>
+        <span style="background:#fef2f2;color:#b91c1c;border-radius:6px;padding:5px 10px;">持久化：favoritesStore JSON 文件（重启不丢）</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 性能优化 -->
+  <div style="background:#fff;border:1px solid #e3e8ef;border-radius:12px;padding:16px 18px;margin-bottom:16px;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:10px;">性能优化四件套（面试核心）</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:13px;">
+      <div style="border:1px solid #e3e8ef;border-radius:8px;padding:10px;"><b>图片懒加载 + 模糊占位</b><br/><span style="color:#6b7280;">IntersectionObserver 提前 240px 预载；16px 占位图 + CSS blur 渐进呈现；aspect-ratio 防 CLS</span></div>
+      <div style="border:1px solid #e3e8ef;border-radius:8px;padding:10px;"><b>虚拟化瀑布流 MasonryGrid</b><br/><span style="color:#6b7280;">只渲染可视区 ±overscan；ResizeObserver 动态测高；实测 360 条数据 DOM 常驻 ≤ 12 个、60fps</span></div>
+      <div style="border:1px solid #e3e8ef;border-radius:8px;padding:10px;"><b>路由懒加载 + 分包</b><br/><span style="color:#6b7280;">React.lazy 拆页 + manualChunks 拆第三方库；首页业务代码仅 8KB（gzip 4KB）</span></div>
+      <div style="border:1px solid #e3e8ef;border-radius:8px;padding:10px;"><b>React.memo / useMemo / useCallback</b><br/><span style="color:#6b7280;">收藏变化时未变化卡片跳过重渲染；稳定引用配合 memo 生效</span></div>
+    </div>
+  </div>
+
+  <!-- 开发路线图 -->
+  <div style="background:#fff;border:1px solid #e3e8ef;border-radius:12px;padding:16px 18px;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:12px;">14 天开发路线图（🎯 = 关键步骤，需亲手复现）</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <div style="flex:1;min-width:170px;border-radius:8px;background:#f1f5f9;padding:10px;border-top:3px solid #2f6fdb;">
+        <div style="font-weight:600;font-size:13px;margin-bottom:6px;">第 1-3 天 · 工程初始化</div>
+        <div style="font-size:13px;color:#4b5563;line-height:1.7;">🎯 TS 工程配置（strict/别名）<br/>🎯 Vite：代理 + manualChunks 分包</div>
+      </div>
+      <div style="flex:1;min-width:170px;border-radius:8px;background:#f1f5f9;padding:10px;border-top:3px solid #16a34a;">
+        <div style="font-weight:600;font-size:13px;margin-bottom:6px;">第 4-6 天 · 后端与基础架构</div>
+        <div style="font-size:13px;color:#4b5563;line-height:1.7;">🎯 确定性模拟数据<br/>🎯 RESTful API 设计<br/>🎯 全局类型 / Axios 封装 / Context+useReducer</div>
+      </div>
+      <div style="flex:1;min-width:170px;border-radius:8px;background:#f1f5f9;padding:10px;border-top:3px solid #d97706;">
+        <div style="font-weight:600;font-size:13px;margin-bottom:6px;">第 7-9 天 · 组件与页面</div>
+        <div style="font-size:13px;color:#4b5563;line-height:1.7;">🎯 通用 UI 组件封装<br/>🎯 路由懒加载 + 代码分割<br/>首页/详情/收藏三页 + 布局</div>
+      </div>
+      <div style="flex:1;min-width:170px;border-radius:8px;background:#f1f5f9;padding:10px;border-top:3px solid #dc2626;">
+        <div style="font-weight:600;font-size:13px;margin-bottom:6px;">第 10-12 天 · 性能优化</div>
+        <div style="font-size:13px;color:#4b5563;line-height:1.7;">🎯 懒加载 + 模糊占位<br/>🎯 虚拟化瀑布流（最难）<br/>缓存策略 + 性能量化验证</div>
+      </div>
+      <div style="flex:1;min-width:170px;border-radius:8px;background:#f1f5f9;padding:10px;border-top:3px solid #475569;">
+        <div style="font-weight:600;font-size:13px;margin-bottom:6px;">第 13-14 天 · 收尾</div>
+        <div style="font-size:13px;color:#4b5563;line-height:1.7;">构建验证 / Git 规范 / Vercel 部署<br/>README + 简历 STAR 量化<br/>面试问答演练（10 连追问）</div>
+      </div>
+    </div>
+    <div style="font-size:12.5px;color:#9ca3af;margin-top:10px;">说明：量化数据（LCP 降低约 35%、DOM ≤ 12、首页 8KB）均来自本机 Chrome DevTools 实测；图示为项目结构与路线示意。</div>
+  </div>
+</div>
+</html>

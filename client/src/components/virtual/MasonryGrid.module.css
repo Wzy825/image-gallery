@@ -1,0 +1,16 @@
+.grid {
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+  scrollbar-gutter: stable;
+}
+
+.inner {
+  position: relative;
+  width: 100%;
+}
+
+.cell {
+  position: absolute;
+  top: 0;
+}

@@ -1,0 +1,39 @@
+.wrap {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: var(--color-skeleton);
+}
+
+/* 模糊占位层：小图放大 + 高斯模糊 */
+.blur {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(18px);
+  transform: scale(1.12);
+  transition: opacity 0.45s ease;
+}
+
+/* 原图层：加载完成后淡入 */
+.main {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.45s ease;
+}
+
+.error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  background: var(--color-skeleton);
+}
