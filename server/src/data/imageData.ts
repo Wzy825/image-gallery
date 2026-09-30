@@ -77,8 +77,9 @@ export const IMAGES: ImageRecord[] = (() => {
     const width = pick(rand, WIDTH_POOL);
     const height = Math.max(420, Math.round(width * (0.62 + rand() * 0.9)));
     const seed = `gallery-${i}`;
-    // 标题：分类名 + 序号，不承诺具体画面内容（图片为随机占位图，避免图文语义错位）
-    const title = `${CATEGORY_NAME[category]} · No.${String(i).padStart(3, '0')}`;
+    // 标题：统一为「精选摄影 + 序号」的中性命名，不出现分类名或具体语义，
+    // 与随机占位图保持语义解耦，避免图文错位观感
+    const title = `精选摄影 · No.${String(i).padStart(3, '0')}`;
 
     // 标签：从词池中取 2~4 个不重复标签
     const pool = [...TAG_POOL[category]];
