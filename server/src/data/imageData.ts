@@ -48,8 +48,16 @@ const TAG_POOL: Record<CategoryId, string[]> = {
   food: ['美食', '探店', '烘焙', '料理', '生活']
 };
 
-const WIDTH_POOL = [640, 720, 800, 900, 1000, 1080, 1200, 1400, 1600];
-const IMAGE_COUNT = 360;
+/** 每分类本地图片数量：01-12，图片与数据一一对应，无重复 */
+const PER_CATEGORY = 12;
+const CATEGORY_IDS = CATEGORIES.map((c) => c.id);
+
+/** 本地图片素材的尺寸：01-04 横图 4:3、05-08 方图 1:1、09-12 竖图 3:4，制造瀑布流错落感 */
+function localImageMeta(index: number): { width: number; height: number } {
+  if (index <= 4) return { width: 1024, height: 768 };
+  if (index <= 8) return { width: 1024, height: 1024 };
+  return { width: 768, height: 1024 };
+}
 
 /** 确定性伪随机数生成器（mulberry32） */
 function mulberry32(seed: number): () => number {
@@ -71,43 +79,44 @@ export const IMAGES: ImageRecord[] = (() => {
   const baseTime = Date.UTC(2026, 0, 1);
   const daySpan = 180 * 24 * 3600 * 1000;
 
-  for (let i = 1; i <= IMAGE_COUNT; i++) {
-    const category = pick(rand, CATEGORIES).id;
-    // 宽度与高度随机，制造瀑布流所需的错落感
-    const width = pick(rand, WIDTH_POOL);
-    const height = Math.max(420, Math.round(width * (0.62 + rand() * 0.9)));
-    const seed = `gallery-${i}`;
-    // 标题：统一为「精选摄影 + 序号」的中性命名，不出现分类名或具体语义，
-    // 与随机占位图保持语义解耦，避免图文错位观感
-    const title = `精选摄影 · No.${String(i).padStart(3, '0')}`;
+  let id = 1;
+  // 按分类均匀生成：每分类 PER_CATEGORY 条，图片指向本地素材，图文内容一一对应
+  for (const category of CATEGORY_IDS) {
+    for (let k = 1; k <= PER_CATEGORY; k++) {
+      const { width, height } = localImageMeta(k);
+      const fileName = `${String(k).padStart(2, '0')}.jpg`;
+      const url = `/images/${category}/${fileName}`;
+      // 标题：统一为「精选摄影 + 序号」的中性命名，不出现分类名或具体语义
+      const title = `精选摄影 · No.${String(id).padStart(3, '0')}`;
 
-    // 标签：从词池中取 2~4 个不重复标签
-    const pool = [...TAG_POOL[category]];
-    const tagCount = 2 + Math.floor(rand() * 3);
-    const tags: string[] = [];
-    for (let t = 0; t < tagCount && pool.length > 0; t++) {
-      tags.push(pool.splice(Math.floor(rand() * pool.length), 1)[0]);
+      // 标签：从词池中取 2~4 个不重复标签
+      const pool = [...TAG_POOL[category]];
+      const tagCount = 2 + Math.floor(rand() * 3);
+      const tags: string[] = [];
+      for (let t = 0; t < tagCount && pool.length > 0; t++) {
+        tags.push(pool.splice(Math.floor(rand() * pool.length), 1)[0]);
+      }
+
+      const likes = Math.floor(rand() * 5000);
+      const createdAt = new Date(baseTime + Math.floor(rand() * daySpan)).toISOString();
+
+      list.push({
+        id,
+        title,
+        description: `这是「${CATEGORY_NAME[category]}」分类下的一张示例图片，来自本地模拟数据源。它演示了图片画廊中的懒加载、筛选、搜索与收藏能力，点击可进入详情页查看完整信息。`,
+        // 本地图片：列表与详情共用原图，缩略图/占位图同源（本地加载极快）
+        url,
+        thumbUrl: url,
+        blurUrl: url,
+        width,
+        height,
+        category,
+        tags,
+        likes,
+        createdAt
+      });
+      id++;
     }
-
-    const likes = Math.floor(rand() * 5000);
-    const createdAt = new Date(baseTime + Math.floor(rand() * daySpan)).toISOString();
-
-    list.push({
-      id: i,
-      title,
-      description: `这是「${CATEGORY_NAME[category]}」分类下的一张示例图片，来自模拟数据源。它演示了图片画廊中的懒加载、筛选、搜索与收藏能力，点击可进入详情页查看完整信息。`,
-      url: `https://picsum.photos/seed/${seed}/${width}/${height}`,
-      // 缩略图：固定 400px 宽，等比缩放，供列表使用
-      thumbUrl: `https://picsum.photos/seed/${seed}/400/${Math.max(200, Math.round((400 * height) / width))}`,
-      // 模糊占位图：16px 宽的超小图，配合 CSS blur 实现渐进式加载
-      blurUrl: `https://picsum.photos/seed/${seed}/16/${Math.max(8, Math.round((16 * height) / width))}`,
-      width,
-      height,
-      category,
-      tags,
-      likes,
-      createdAt
-    });
   }
   return list;
 })();
