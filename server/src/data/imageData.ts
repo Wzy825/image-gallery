@@ -39,15 +39,6 @@ export const CATEGORY_NAME: Record<CategoryId, string> = Object.fromEntries(
   CATEGORIES.map((c) => [c.id, c.name])
 ) as Record<CategoryId, string>;
 
-const CATEGORY_WORDS: Record<CategoryId, string[]> = {
-  nature: ['湖畔晨光', '山间云海', '金色麦田', '雨后森林', '雪岭初晴', '海岸日落', '峡谷远眺', '草原星空', '秋日红叶', '晨雾湖泊'],
-  portrait: ['街角人像', '逆光剪影', '少女侧颜', '老人肖像', '城市旅人', '胶片写真', '微笑特写', '黑白肖像', '窗前少女', '地铁随拍'],
-  architecture: ['摩天楼宇', '江南水乡', '教堂穹顶', '古建飞檐', '现代幕墙', '桥梁夜色', '旧城小巷', '玻璃天幕', '塔楼远望', '工业遗存'],
-  animal: ['林间松鼠', '雪原狐狸', '猫的眼神', '候鸟迁徙', '草原斑马', '海底水母', '树梢蜂鸟', '北极熊', '猎豹疾驰', '企鹅群落'],
-  technology: ['芯片特写', '机械臂作业', '数据中心', '无人机阵列', 'AI 实验室', '卫星发射', '量子计算', '智能工厂', '全息投影', '机器人协作'],
-  food: ['抹茶甜点', '深夜拉面', '手冲咖啡', '法式烘焙', '海鲜大餐', '时令果盘', '街头小吃', '火锅盛宴', '日式便当', '精致甜品']
-};
-
 const TAG_POOL: Record<CategoryId, string[]> = {
   nature: ['自然', '风景', '旅行', '摄影', '户外'],
   portrait: ['人像', '写真', '情绪', '光影', '纪实'],
@@ -86,8 +77,8 @@ export const IMAGES: ImageRecord[] = (() => {
     const width = pick(rand, WIDTH_POOL);
     const height = Math.max(420, Math.round(width * (0.62 + rand() * 0.9)));
     const seed = `gallery-${i}`;
-    const words = CATEGORY_WORDS[category];
-    const title = `${pick(rand, words)} · No.${String(i).padStart(3, '0')}`;
+    // 标题：分类名 + 序号，不承诺具体画面内容（图片为随机占位图，避免图文语义错位）
+    const title = `${CATEGORY_NAME[category]} · No.${String(i).padStart(3, '0')}`;
 
     // 标签：从词池中取 2~4 个不重复标签
     const pool = [...TAG_POOL[category]];
