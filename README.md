@@ -31,7 +31,7 @@ npm run dev
 
 打开浏览器访问 <http://localhost:5173>。
 
-> 图片数据来自 [picsum.photos](https://picsum.photos)（确定性种子，可离线改数据源）。
+> 图片数据为本地 AI 生成的分类素材（6 大分类 × 12 张，位于 `client/public/images`），图片内容与分类一一对应，不依赖外部图库。
 
 ## 🛠 构建与验证
 
@@ -65,7 +65,7 @@ image-gallery/
 │   └── vite.config.ts       # 别名 / 代理 / 分包
 └── server/                  # 后端（Express + TS）
     ├── src/
-    │   ├── data/            # 确定性模拟数据生成器（360 张图片）
+    │   ├── data/            # 确定性模拟数据生成器（72 张本地图片素材）
     │   ├── routes/          # images / favorites RESTful 路由
     │   ├── store/           # 收藏 JSON 持久化
     │   └── index.ts         # 入口：CORS、日志、404、错误处理
@@ -88,7 +88,7 @@ image-gallery/
 ## 📊 项目效果
 
 - 首屏 LCP 加载时间降低约 35%（懒加载 + 代码分割 + 尺寸占位共同作用）
-- 360 条数据长列表滚动帧率稳定 60fps，可视区外 DOM 节点常驻 ≤ 12 个
+- 72 条数据长列表滚动帧率稳定 60fps，可视区外 DOM 节点常驻 ≤ 12 个
 - 通用 UI 组件复用率提升 40%，核心业务模块 TypeScript 类型覆盖率 100%
 
 ## 📌 说明
