@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LazyImage } from '@/components/LazyImage';
 import { HeartIcon } from '@/components/ui/icons/HeartIcon';
-import { CATEGORY_NAMES, type ImageItem } from '@/types';
+import type { ImageItem } from '@/types';
 import { formatLikes } from '@/utils/format';
 import styles from './ImageCard.module.css';
 
@@ -38,7 +38,6 @@ export const ImageCard = memo(function ImageCard({
     >
       <LazyImage src={item.url} blurSrc={item.blurUrl} alt={item.title} aspectRatio={item.width / item.height} />
       <div className={styles.overlay}>
-        <span className={styles.category}>{CATEGORY_NAMES[item.category]}</span>
         <button
           className={favorite ? styles.favActive : styles.fav}
           aria-label={favorite ? '取消收藏' : '收藏'}
